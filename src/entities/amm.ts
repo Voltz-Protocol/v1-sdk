@@ -2776,7 +2776,7 @@ class AMM {
 
   // balance checks
 
-  public async hasEnoughUnderlyingTokens(amount: number): Promise<boolean> {
+  public async getUnderlyingTokenBalance():Promise<BigNumber> {
     if (!this.signer) {
       throw new Error('Wallet not connected');
     }
@@ -2802,8 +2802,12 @@ class AMM {
       currentBalance = await token.balanceOf(signerAddress);
     }
 
-    const scaledAmount = BigNumber.from(this.scale(amount));
+    return currentBalance;
+  }
 
+  public async hasEnoughUnderlyingTokens(amount: number): Promise<boolean> {
+    const currentBalance = await this.getUnderlyingTokenBalance();
+    const scaledAmount = BigNumber.from(this.scale(amount));
     return currentBalance.gte(scaledAmount);
   }
 
